@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Decision Engine Offline Research Workbench 管理层汇报">
+  <title>Offline Research Workbench｜管理层汇报</title>
+  <style>
+    :root{
+      --ink:#101828;--muted:#667085;--line:#e4e7ec;--surface:#fff;--canvas:#f5f7fb;
+      --navy:#11182d;--blue:#3157d5;--blue-soft:#edf2ff;--cyan:#0a7891;--cyan-soft:#e8f7fa;
+      --orange:#b54708;--orange-soft:#fff3e8;--green:#067647;--green-soft:#ecfdf3;
+      --purple:#6941c6;--purple-soft:#f4f0ff;--red:#b42318;--red-soft:#fef3f2;
+      --shadow:0 14px 40px rgba(16,24,40,.08);--radius:18px;
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--canvas);color:var(--ink);font-family:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;line-height:1.58}
+    button{font:inherit}.topbar{position:sticky;top:0;z-index:50;height:68px;background:rgba(17,24,45,.96);color:#fff;display:flex;align-items:center;padding:0 34px;border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(12px)}
+    .brand{display:flex;align-items:center;gap:12px;min-width:305px}.brand-mark{width:38px;height:38px;border-radius:11px;background:#fff;color:var(--navy);display:grid;place-items:center;font-weight:900}.brand-copy strong{display:block;font-size:14px}.brand-copy span{display:block;font-size:10px;letter-spacing:.16em;color:#aab3cf}
+    .topnav{display:flex;gap:4px;overflow:auto;scrollbar-width:none}.topnav a{color:#b9c1d8;text-decoration:none;padding:9px 12px;border-radius:9px;font-size:13px;white-space:nowrap}.topnav a:hover{background:rgba(255,255,255,.08);color:#fff}.presenter{margin-left:auto;color:#cdd3e3;font-size:12px;white-space:nowrap}
+    main{max-width:1440px;margin:0 auto;padding:34px 36px 80px}.hero{background:linear-gradient(125deg,#121a32 0%,#172953 58%,#0f5d73 100%);color:#fff;border-radius:26px;padding:54px 58px;box-shadow:var(--shadow);position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:430px;height:430px;border-radius:50%;border:80px solid rgba(255,255,255,.05);right:-120px;top:-170px}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#5370c8;margin-bottom:10px}.hero .eyebrow{color:#7ed9eb}.hero h1{font-size:44px;line-height:1.13;margin:0;letter-spacing:-.035em;max-width:850px}.hero p{font-size:18px;color:#ced8ef;max-width:880px;margin:20px 0 30px}.hero-meta{display:flex;gap:12px;flex-wrap:wrap}.hero-chip{padding:8px 12px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.07);font-size:12px;color:#eef3ff}
+    .executive{display:grid;grid-template-columns:1.2fr .8fr;gap:20px;margin-top:22px}.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 7px 24px rgba(16,24,40,.045)}.card-body{padding:24px}.thesis{border-left:4px solid var(--blue)}.thesis h2{font-size:21px;margin:0 0 8px}.thesis p{margin:0;color:#475467}.outcome-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.outcome{padding:18px;border-radius:14px;background:#f8faff}.outcome b{display:block;font-size:24px;color:var(--navy)}.outcome span{font-size:12px;color:var(--muted)}
+    section{scroll-margin-top:88px;margin-top:62px}.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:22px}.section-head h2{font-size:31px;letter-spacing:-.025em;margin:4px 0}.section-head p{margin:0;color:var(--muted);max-width:760px}.section-no{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;color:var(--blue);font-weight:800}.key-answer{padding:14px 16px;border-radius:12px;background:var(--blue-soft);border:1px solid #cfd8ff;color:#233a84;font-size:14px;font-weight:700}
+    .legend{display:flex;gap:8px;flex-wrap:wrap}.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:850;letter-spacing:.04em;white-space:nowrap}.badge:before{content:"";width:7px;height:7px;border-radius:50%}.preset{background:var(--orange-soft);color:var(--orange)}.preset:before{background:#f79009}.code{background:var(--blue-soft);color:#2545a5}.code:before{background:var(--blue)}.llm{background:var(--purple-soft);color:var(--purple)}.llm:before{background:#9e77ed}.human{background:var(--green-soft);color:var(--green)}.human:before{background:#12b76a}.hybrid{background:var(--cyan-soft);color:var(--cyan)}.hybrid:before{background:#16b8cf}
+    .architecture{padding:26px;overflow:hidden}.arch-track{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:stretch}.arch-node{position:relative;padding:18px 16px;border-radius:14px;border:1px solid var(--line);background:#fff;min-height:146px}.arch-node:after{content:"→";position:absolute;right:-17px;top:53px;color:#98a2b3;font-weight:900;font-size:20px;z-index:2}.arch-node:last-child:after{display:none}.arch-node .id{font:800 11px ui-monospace,monospace;color:var(--blue)}.arch-node h3{font-size:16px;margin:8px 0 6px}.arch-node p{font-size:12px;color:var(--muted);margin:0}.arch-node.mvp{border-color:#9bb0f5;background:linear-gradient(180deg,#fff,#f4f7ff)}.arch-node.later{opacity:.7;background:#fafafa}.mvp-band{margin-top:14px;padding:12px 16px;border-radius:12px;background:#eff4ff;border:1px solid #cdd9ff;font-size:13px;color:#294194}.control-planes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.control{padding:14px 16px;border-radius:12px;border:1px dashed #98a2b3;font-size:13px}.control strong{display:block;margin-bottom:3px}.control.data{background:#f0fbfc;border-color:#52bdcc}.control.validation{background:#fff8ed;border-color:#f5a24d}
+    .mvp-flow{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:20px}.flow-node{padding:15px 12px;background:#fff;border:1px solid var(--line);border-radius:12px;position:relative}.flow-node:not(:last-child):after{content:"›";position:absolute;right:-11px;top:25px;color:#98a2b3;font-size:21px;font-weight:900}.flow-node small{display:block;color:var(--blue);font-weight:800}.flow-node b{font-size:13px}.flow-node span{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+    .public-layout{display:grid;grid-template-columns:.78fr 1.22fr;gap:18px}.why-list{display:grid;gap:10px}.why{padding:14px;border-radius:12px;background:#f8fafc;border:1px solid var(--line)}.why strong{font-size:13px}.why p{font-size:12px;color:var(--muted);margin:4px 0 0}.call-return{padding:24px;background:linear-gradient(150deg,#11182d,#18385b);color:#fff;border-radius:var(--radius);min-height:100%}.call-return h3{margin:0 0 18px}.callbox,.returnbox{padding:16px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}.callbox b,.returnbox b{display:block}.callbox p,.returnbox p{font-size:12px;color:#cbd5e9;margin:5px 0 0}.lab{margin:12px 0;padding:12px;border:1px dashed #5a7697;border-radius:12px;text-align:center;color:#a8e0ea;font-size:12px}.public-steps{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:18px}.public-step{padding:15px;background:#fff;border:1px solid var(--line);border-radius:13px}.public-step .n{color:var(--cyan);font:800 11px ui-monospace,monospace}.public-step h4{margin:6px 0;font-size:14px}.public-step p{font-size:11px;color:var(--muted);margin:0}.public-example{margin-top:16px;padding:18px;border-radius:14px;background:#f6fafb;border:1px solid #cfe9ed}.public-example code{font-family:ui-monospace,Consolas,monospace;font-size:11px;color:#345}
+    .review-model{display:grid;grid-template-columns:1fr 1.3fr;gap:18px;margin-bottom:18px}.review-answer{padding:24px;background:var(--navy);color:#fff;border-radius:var(--radius)}.review-answer h3{font-size:24px;margin:0 0 8px}.review-answer p{color:#cbd3e5;margin:0}.review-answer .no{color:#ffbb78}.gate-strip{padding:22px}.gate-flow{display:grid;grid-template-columns:1fr 1.6fr 1fr;gap:10px}.gate{border-radius:13px;padding:16px;border:1px solid var(--line)}.gate.a,.gate.b{background:var(--orange-soft);border-color:#f8c991}.gate.auto{background:var(--blue-soft);border-color:#c9d4ff}.gate strong{display:block}.gate span{font-size:11px;color:var(--muted)}
+    .tabs{display:flex;gap:8px;margin-bottom:14px}.tab{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 16px;color:#475467;font-weight:750;cursor:pointer}.tab.active{background:var(--navy);border-color:var(--navy);color:#fff}.line-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}.line-summary div{padding:13px;background:#fff;border:1px solid var(--line);border-radius:12px}.line-summary label{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.line-summary strong{font-size:13px}.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.step-card{border:1px solid var(--line);background:#fff;border-radius:14px;overflow:hidden;transition:.18s ease}.step-card:hover{transform:translateY(-2px);box-shadow:0 9px 20px rgba(16,24,40,.07)}.step-toggle{width:100%;border:0;background:transparent;text-align:left;padding:15px;cursor:pointer;color:inherit}.step-top{display:flex;align-items:center;justify-content:space-between}.step-id{font:850 11px ui-monospace,monospace;color:var(--blue)}.step-card h4{margin:7px 0 4px;font-size:14px}.step-card .purpose{font-size:11px;color:var(--muted);min-height:35px;margin:0}.step-detail{display:none;padding:0 15px 15px;border-top:1px solid var(--line)}.step-card.open .step-detail{display:block}.io{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}.io div{background:#f8fafc;border-radius:8px;padding:8px}.io label{display:block;font-size:9px;color:var(--muted);font-weight:800}.io span{font-size:10px}.responsibility{margin-top:9px;display:grid;gap:6px}.rline{font-size:10px}.rline b{display:inline-block;min-width:74px}.example{margin-top:9px;padding:9px;border-left:3px solid var(--cyan);background:#f2fafb;font-size:10px;color:#344054}.step-card.gate-step{border-color:#f0b470}.step-card.release-step{border-color:#73c29d}
+    .config-code{display:grid;grid-template-columns:1fr 90px 1fr;gap:16px;align-items:stretch}.plane{padding:24px}.plane h3{margin:0 0 6px}.plane>p{font-size:12px;color:var(--muted);margin:0 0 16px}.filetree{font:12px/1.7 ui-monospace,Consolas,monospace;background:#101828;color:#d8e1f4;border-radius:13px;padding:16px;white-space:pre-wrap}.bridge{display:grid;place-items:center;color:var(--blue);font-size:24px;font-weight:900}.code-sample{font:11px/1.65 ui-monospace,Consolas,monospace;background:#0f172a;color:#d6e2ff;border-radius:13px;padding:15px;overflow:auto}.k{color:#8bd5ff}.s{color:#a6e3a1}.c{color:#7f8ea8}.config-rows{display:grid;gap:8px;margin-top:14px}.config-row{display:grid;grid-template-columns:140px 1fr auto;gap:10px;align-items:center;padding:10px 12px;background:#f8fafc;border-radius:9px;font-size:11px}.config-row code{color:#344054}.impact{margin-top:16px;padding:16px;background:#fff8ed;border:1px solid #f7c98f;border-radius:13px}.impact strong{display:block}.impact span{font-size:12px;color:#7a2e0e}
+    .iteration-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.loop{padding:24px;position:relative;overflow:hidden}.loop h3{font-size:20px;margin:0 0 4px}.loop>p{font-size:12px;color:var(--muted);margin:0 0 18px}.loop-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.loop-step{position:relative;padding:10px 8px;border-radius:10px;background:#f8fafc;border:1px solid var(--line);font-size:10px;text-align:center}.loop-step:not(:last-child):after{content:"→";position:absolute;right:-8px;top:9px;color:#98a2b3;z-index:2}.loop.code-loop{border-top:4px solid var(--blue)}.loop.prompt-loop{border-top:4px solid var(--purple)}.compare{margin-top:18px;width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden}.compare th,.compare td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);font-size:12px}.compare th{background:#f8fafc;color:#475467;font-size:10px;text-transform:uppercase;letter-spacing:.06em}.compare td:first-child{font-weight:800;width:190px}.compare tr:last-child td{border-bottom:0}.decision{display:inline-flex;padding:3px 7px;border-radius:999px;font-size:9px;font-weight:800}.rare{background:var(--red-soft);color:var(--red)}.frequent{background:var(--purple-soft);color:var(--purple)}
+    .roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.phase{padding:20px}.phase .phase-no{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--navy);color:#fff;font-weight:850}.phase h3{font-size:15px;margin:13px 0 6px}.phase ul{padding-left:17px;margin:0;color:var(--muted);font-size:12px}.closing{margin-top:28px;background:linear-gradient(120deg,#17213f,#183d5d);border-radius:20px;padding:30px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:24px}.closing h2{margin:0;font-size:24px}.closing p{margin:6px 0 0;color:#cbd5e9}.closing b{color:#8ee5f3}
+    footer{text-align:center;color:#98a2b3;font-size:11px;margin-top:36px}
+    @media(max-width:1100px){.arch-track{grid-template-columns:repeat(3,1fr)}.arch-node:nth-child(3):after{display:none}.public-steps{grid-template-columns:repeat(3,1fr)}.steps{grid-template-columns:repeat(2,1fr)}.mvp-flow{grid-template-columns:repeat(3,1fr)}.flow-node:after{display:none}.topnav{display:none}.presenter{margin-left:auto}}
+    @media(max-width:760px){main{padding:20px 14px 60px}.topbar{padding:0 14px}.brand{min-width:0}.brand-copy span{display:none}.hero{padding:36px 24px}.hero h1{font-size:32px}.executive,.public-layout,.review-model,.iteration-grid,.config-code{grid-template-columns:1fr}.bridge{transform:rotate(90deg)}.outcome-grid,.line-summary,.control-planes,.roadmap{grid-template-columns:1fr}.arch-track,.public-steps,.steps,.mvp-flow{grid-template-columns:1fr}.arch-node:after,.public-step:after{display:none}.gate-flow{grid-template-columns:1fr}.section-head{display:block}.closing{display:block}.loop-steps{grid-template-columns:1fr}.loop-step:after{display:none}.presenter{display:none}}
+    @media print{.topbar{display:none}body{background:#fff}main{max-width:none;padding:0}.hero{box-shadow:none}section{break-inside:avoid;margin-top:34px}.step-detail{display:block}.step-card{break-inside:avoid}.tabs{display:none}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark">D</div><div class="brand-copy"><strong>Decision Engine</strong><span>OFFLINE RESEARCH WORKBENCH</span></div></div>
+    <nav class="topnav" aria-label="汇报章节">
+      <a href="#architecture">全链路</a><a href="#public-chain">公共链</a><a href="#research-lines">研究模块</a><a href="#engineering">代码与配置</a><a href="#iterations">两类迭代</a><a href="#roadmap">落地顺序</a>
+    </nav>
+    <div class="presenter">Grace Cui · Research Lead</div>
+  </header>
+  <main>
+    <section class="hero" style="margin-top:0">
+      <div class="eyebrow">Management Brief · 2026.10.29</div>
+      <h1>把 Offline Research 做成<br>可配置、可复现、可治理的研究生产系统</h1>
+      <p>核心不是“让 LLM 替我们下结论”，而是把对象定义、公共证据、自动研究、人工验证、发布与每日监控连成一条可追溯链路。</p>
+      <div class="hero-meta"><span class="hero-chip">6 条研究产品线</span><span class="hero-chip">2 个贯穿控制面</span><span class="hero-chip">MVP1：Trait / State / Signal</span><span class="hero-chip">TR02 完整 Mock</span></div>
+    </section>
+
+    <div class="executive">
+      <div class="card thesis"><div class="card-body"><div class="eyebrow">一句话方案</div><h2>稳定代码内核 + 版本化配置 + 两道人工 Gate</h2><p>常见研究调整通过配置、Prompt、阈值和验证协议迭代，不改底层代码；只有新增原子能力、接口契约或执行语义时，才进入 AI Coding 的代码变更流程。</p></div></div>
+      <div class="outcome-grid"><div class="outcome"><b>30</b><span>MVP1 三条对象线节点</span></div><div class="outcome"><b>2</b><span>真正的人工审批 Gate</span></div><div class="outcome"><b>0</b><span>权威链路 LLM-only 节点</span></div></div>
+    </div>
+
+    <section id="architecture">
+      <div class="section-head"><div><div class="section-no">01 / SYSTEM MAP</div><h2>Offline Research 全链路与 MVP1 边界</h2><p>完整系统有六条研究产品线；MVP1 不试图一次完成所有内容，而是先打通“公共测量 + 三类对象研究 + 两道 Gate + 运行回放”。</p></div><div class="key-answer">MVP1 先证明链路可用，再扩对象清单</div></div>
+      <div class="card architecture">
+        <div class="arch-track">
+          <div class="arch-node mvp"><span class="id">L0</span><h3>Measurement</h3><p>把原始事实变成有单位、分母、时点与血缘的可复用测量。</p></div>
+          <div class="arch-node mvp"><span class="id">L1</span><h3>Trait</h3><p>慢时钟：是否存在长期稳定的行为取向。</p></div>
+          <div class="arch-node mvp"><span class="id">L2</span><h3>State</h3><p>中时钟：某条件是否持续，何时进入和退出。</p></div>
+          <div class="arch-node mvp"><span class="id">L3</span><h3>Signal</h3><p>快时钟：什么事件发生或临近，当前是否相关。</p></div>
+          <div class="arch-node later"><span class="id">L4 · LATER</span><h3>Relationship</h3><p>对象在什么条件下能支持哪个 Requirement。</p></div>
+          <div class="arch-node later"><span class="id">L5 · LATER</span><h3>Impact</h3><p>预测、效果、uplift 与下游资源影响。</p></div>
+        </div>
+        <div class="mvp-band"><strong>MVP1 边界：</strong>公共链 F01–F06 + TR02 / ST01 / SG01 工作台 + Gate A / Gate B + Runs & Replay + Validation / Bad Case。L4/L5 先保留接口，不在 MVP1 宣布完成。</div>
+        <div class="control-planes"><div class="control data"><strong>Data & Context Control</strong>来源、PIT 时点、权限、上下文隔离、数据切分贯穿所有线路。</div><div class="control validation"><strong>Validation & Release Control</strong>独立验证、人审、冻结、用途发布、监控与 bad case 贯穿所有线路。</div></div>
+      </div>
+      <div class="mvp-flow" aria-label="MVP1 端到端流程">
+        <div class="flow-node"><small>01</small><b>Canonical Object</b><span>TR02 / ST01 / SG01</span></div>
+        <div class="flow-node"><small>02</small><b>StudySpec</b><span>语义、边界、rivals、用途</span></div>
+        <div class="flow-node"><small>03</small><b>Public Chain</b><span>事实、机会、测量、上下文</span></div>
+        <div class="flow-node"><small>04</small><b>Gate A</b><span>人工审核研究设计</span></div>
+        <div class="flow-node"><small>05</small><b>Automated Run</b><span>冻结配置自动执行</span></div>
+        <div class="flow-node"><small>06</small><b>Gate B</b><span>人工审核结果与用途</span></div>
+        <div class="flow-node"><small>07</small><b>Daily + Feedback</b><span>日批、监控、bad case</span></div>
+      </div>
+    </section>
+
+    <section id="public-chain">
+      <div class="section-head"><div><div class="section-no">02 / PUBLIC CHAIN</div><h2>为什么要有公共链，以及它怎样生成</h2><p>公共链不是对象主流程前面的一条“大流水线”，而是 Trait / State / Signal 在需要数据能力时调用的共享实验室。</p></div><div class="legend"><span class="badge preset">人工预设</span><span class="badge code">代码执行</span><span class="badge llm">LLM 辅助</span><span class="badge human">人工验证</span></div></div>
+      <div class="public-layout">
+        <div class="why-list">
+          <div class="why"><strong>避免三条线重复造数据逻辑</strong><p>PIT、来源绑定、单位、测量、充分性只实现一次。</p></div>
+          <div class="why"><strong>避免共享无边界“大宽表”</strong><p>每次调用必须带 StudySpec、用途、字段 allowlist 和 as_of。</p></div>
+          <div class="why"><strong>隔离分支上下文</strong><p>共享原始事实和背景，但默认看不到其他分支的最终 Assessment。</p></div>
+          <div class="why"><strong>让证据可以回放</strong><p>每个返回包包含版本、hash、known_at、来源与异常原因。</p></div>
+        </div>
+        <div class="call-return">
+          <h3>对象节点调用共享实验室，而不是把结论外包</h3>
+          <div class="callbox"><b>TR02.T02 / T03 → ObjectDataRequest</b><p>研究用途、as_of、最小字段、允许来源、禁止读取的分支结果。</p></div>
+          <div class="lab">F01–F06 只生产通用事实 / 机会 / 测量 / 充分性 / Context</div>
+          <div class="returnbox"><b>ResearchInputBundle → TR02.T02 / T03</b><p>T02 再解释为 EligibleEpisodes；T03 再解释为 TR02 IndicatorBook。公共链不输出“TR02=True”。</p></div>
+        </div>
+      </div>
+      <div class="public-steps">
+        <div class="public-step"><div class="n">F01</div><h4>Source Binding</h4><p>人工冻结来源语义；代码绑定 subject、grain、unit、effective/known time。</p></div>
+        <div class="public-step"><div class="n">F02</div><h4>PIT Snapshot</h4><p>代码只保留 as_of 当时已知记录，保留迟到修订与 supersedes 血缘。</p></div>
+        <div class="public-step"><div class="n">F03</div><h4>Opportunity Book</h4><p>人工定义 opportunity；代码枚举完整候选分母与不可观察原因。</p></div>
+        <div class="public-step"><div class="n">F04</div><h4>Measurement</h4><p>人工批准公式/单位/方向；代码生成分子、分母、coverage 与 missing reason。</p></div>
+        <div class="public-step"><div class="n">F05</div><h4>Adequacy</h4><p>人工预注册门槛；代码检查历史、覆盖、方法家族、split 与独立参照。</p></div>
+        <div class="public-step"><div class="n">F06</div><h4>Context Packet</h4><p>人工批准 allow/deny policy；代码强制每个 worker 能看什么、不能看什么。</p></div>
+      </div>
+      <div class="public-example"><strong>TR02 具体例子：</strong> <code>BAL-v1 known_at=10/01</code> 可以进入 10/01 快照；<code>BAL-v2 known_at=10/05</code> 不能回填。F03 产生 9 条候选机会，F04 产生 stable cash share / buffer ratio / rollover persistence，F05 因独立构念参照缺失返回 <code>DEFER</code>，最终交回无对象结论的 Bundle。</div>
+    </section>
+
+    <section id="research-lines">
+      <div class="section-head"><div><div class="section-no">03 / RESEARCH MODULES</div><h2>每条产品线逐节点：谁预设、谁执行、谁验证</h2><p>点击下面任一步骤可展开 Input、Output、人工预设、LLM 辅助、Human Validation 与具体例子。</p></div></div>
+      <div class="review-model">
+        <div class="review-answer"><h3><span class="no">不是</span>每一步都人工点批准</h3><p>每一步都必须可追溯、可展开、可复现；但正常计算节点自动执行。人工集中在研究设计、异常/近门槛案例和最终发布决策。</p></div>
+        <div class="card gate-strip"><div class="gate-flow"><div class="gate a"><strong>Gate A · 研究设计审核</strong><span>检查 T01/T02、指标、rivals、validation protocol。</span></div><div class="gate auto"><strong>T03–T08 · 自动执行</strong><span>代码按冻结配置运行；失败、数据不足、近门槛才创建 ReviewTask。</span></div><div class="gate b"><strong>Gate B · 结果与发布审核</strong><span>查看 Validation Report，approve / defer / reject / redefine。</span></div></div></div>
+      </div>
+      <div class="legend" style="margin-bottom:14px"><span class="badge preset">HUMAN-PRESET</span><span class="badge code">CODE</span><span class="badge llm">LLM-ASSIST</span><span class="badge human">HUMAN-VALID</span><span class="badge hybrid">HYBRID</span></div>
+      <div class="tabs" role="tablist" aria-label="研究产品线"><button class="tab active" data-line="trait">Trait · TR02</button><button class="tab" data-line="state">State · ST01</button><button class="tab" data-line="signal">Signal · SG01</button></div>
+      <div id="line-summary" class="line-summary"></div>
+      <div id="steps" class="steps" aria-live="polite"></div>
+    </section>
+
+    <section id="engineering">
+      <div class="section-head"><div><div class="section-no">04 / ENGINEERING MODEL</div><h2>代码与配置怎样隔离：大多数研究调整不动底层代码</h2><p>底层代码提供稳定原子能力；对象语义、阈值、Prompt、验证协议与关系以版本化配置表达。RunManifest 把两者精确绑定。</p></div><div class="key-answer">evaluate(input, frozen_config)</div></div>
+      <div class="config-code">
+        <div class="card plane"><h3>可变层 · Config / Registry</h3><p>由研究负责人维护，LLM 可起草，人工批准后成为新版本。</p><div class="filetree">configs/
+├─ objects/TR02.yaml
+├─ measurements/liquidity.yaml
+├─ protocols/trait-validation.yaml
+├─ prompts/trait-copilot-v3.yaml
+├─ context/trait-policy-v2.yaml
+└─ relationships/*.yaml</div><div class="config-rows"><div class="config-row"><b>canonical meaning</b><code>Liquidity buffer orientation</code><span class="badge preset">预设</span></div><div class="config-row"><b>rival policy</b><code>missing_obligation → UNKNOWN</code><span class="badge hybrid">混合</span></div><div class="config-row"><b>validation</b><code>drift ≤ 0.20</code><span class="badge preset">预设</span></div><div class="config-row"><b>prompt</b><code>trait-copilot-v3</code><span class="badge llm">LLM</span></div></div></div>
+        <div class="bridge">⇄</div>
+        <div class="card plane"><h3>稳定层 · Python Capability Kernel</h3><p>负责确定性执行、类型校验、版本冻结、回放、权限和审计。</p><div class="code-sample"><span class="k">def</span> evaluate_trait(input, config):
+  validate_schema(input, config)
+  facts = pit_snapshot(input.records,
+                       as_of=input.as_of)
+  values = measure(facts, config.formulas)
+  report = validate(values, config.protocol)
+  <span class="k">return</span> Result(values=values,
+                report=report,
+                manifest=freeze_versions())</div><div class="config-rows"><div class="config-row"><b>PIT operator</b><code>pit_snapshot@1.0.0</code><span class="badge code">代码</span></div><div class="config-row"><b>formula engine</b><code>typed_ast@1.2.0</code><span class="badge code">代码</span></div><div class="config-row"><b>orchestrator</b><code>node_run@0.8.4</code><span class="badge code">代码</span></div><div class="config-row"><b>audit / replay</b><code>RunManifest</code><span class="badge code">代码</span></div></div></div>
+      </div>
+      <div class="impact"><strong>影响范围例子</strong><span>把 TR02.T04 的 <code>missing_material_obligation</code> 从“继续评分”改成 <code>UNKNOWN_DEFER</code>：只生成新的 TR02 Draft Config，并重跑 T04–T08；不改 PIT、Measurement 内核，也不重跑独立的 State / Signal。</span></div>
+    </section>
+
+    <section id="iterations">
+      <div class="section-head"><div><div class="section-no">05 / TWO ITERATION LOOPS</div><h2>AI Coding 的代码迭代，与 LLM 配置迭代必须分开治理</h2><p>两者都可以由 AI 加速，但发布权限、测试方法和影响范围完全不同。</p></div></div>
+      <div class="iteration-grid">
+        <div class="card loop code-loop"><h3>Loop A · 底层代码迭代</h3><p>低频、严格。只有系统缺少原子能力或契约需要升级时进入。</p><div class="loop-steps"><div class="loop-step">Capability Gap</div><div class="loop-step">AI Coding / PR</div><div class="loop-step">Unit + Contract Test</div><div class="loop-step">Regression / Replay</div><div class="loop-step">Kernel Release</div></div></div>
+        <div class="card loop prompt-loop"><h3>Loop B · LLM / Config 迭代</h3><p>高频、受控。研究内容变化通常走这一条，不触碰稳定内核。</p><div class="loop-steps"><div class="loop-step">Bad Case / Idea</div><div class="loop-step">LLM Draft Patch</div><div class="loop-step">Offline Eval</div><div class="loop-step">Human Accept</div><div class="loop-step">Draft Run + Gate</div></div></div>
+      </div>
+      <table class="compare">
+        <thead><tr><th>判断问题</th><th>走代码迭代</th><th>走配置 / Prompt 迭代</th></tr></thead>
+        <tbody>
+          <tr><td>典型变化</td><td>新增 PIT 算子、公式 AST、节点状态机、权限机制</td><td>对象定义、阈值、rivals、Prompt、few-shot、验证门槛</td></tr>
+          <tr><td>频率</td><td><span class="decision rare">低频 / 受版本发布控制</span></td><td><span class="decision frequent">高频 / Draft → Eval → Gate</span></td></tr>
+          <tr><td>AI 能做什么</td><td>生成代码与测试、解释 diff；必须通过 PR 和回归</td><td>生成结构化 Patch、归纳 bad case；必须人工接受</td></tr>
+          <tr><td>上线证据</td><td>单测、契约测试、历史回放、性能/安全验证</td><td>固定 eval set、对照报告、人工抽检、Gate 决策</td></tr>
+          <tr><td>回滚单位</td><td>Kernel / Adapter 版本</td><td>Config / Prompt / Protocol 精确版本</td></tr>
+          <tr><td>绝不能做</td><td>AI 直接改生产代码并自我批准</td><td>LLM 直接写 Active、放宽 Gate、逐客户临时改规则</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="roadmap">
+      <div class="section-head"><div><div class="section-no">06 / DELIVERY ROADMAP</div><h2>从 0 到 1 的建议落地顺序</h2><p>先把一条链路跑真，再增加对象；避免一开始把 37 个槽位、复杂 Agent 和完整平台同时建设。</p></div></div>
+      <div class="roadmap"><div class="card phase"><div class="phase-no">1</div><h3>冻结合同与边界</h3><ul><li>Object / Source / Measurement</li><li>NodeSpec 与 ContextPolicy</li><li>Gate A/B 模板</li></ul></div><div class="card phase"><div class="phase-no">2</div><h3>做实 TR02 切片</h3><ul><li>公共链 F01–F06</li><li>T01–T10 RunManifest</li><li>可复现 Validation Report</li></ul></div><div class="card phase"><div class="phase-no">3</div><h3>验证三分支通用性</h3><ul><li>加入 ST01 与 SG01</li><li>同快照、上下文隔离</li><li>一支失败不影响其他支</li></ul></div><div class="card phase"><div class="phase-no">4</div><h3>形成迭代闭环</h3><ul><li>Review / Bad Case</li><li>Config / Prompt Eval</li><li>日批、监控、版本回退</li></ul></div></div>
+      <div class="closing"><div><h2>管理层需要批准的不是 30 个节点，而是三件事</h2><p><b>研究边界</b>是否合理、<b>证据</b>是否足够、<b>用途与风险</b>是否允许发布。</p></div><div class="legend"><span class="badge preset">定义清楚</span><span class="badge code">执行稳定</span><span class="badge human">人审负责</span></div></div>
+    </section>
+    <footer>Decision Engine · Offline Research Workbench · Management Brief · Sandbox concept, not production conclusion</footer>
+  </main>
+  <script>
+    const lines = {
+      trait:{label:"Trait / TR02 流动性缓冲取向",clock:"慢时钟：长期稳定取向",result:"Raw score / Percentile / Stability / Validation",gate:"Gate A: T01–T02 · Gate B: T09",steps:[
+        ["T01","对象定义","固定 canonical meaning、正反例、UNKNOWN 与允许用途。","Canonical Registry","TraitStudySpec","含义、边界、候选指标家族、rivals、用途","起草 StudySpec、补边界案例","逐项审核并批准定义版本","TR02 不是“当前现金高”，也不是购买概率。","hybrid"],
+        ["T02","证据机会与 Eligibility","定义什么才是真实、自主、可观察的选择机会。","StudySpec + OpportunityBook","EligibleEpisodeSet","自主选择、eligible 分母、排除规则、reason codes","从 bad case 建议边界与 reason code","审核分母和排除边界","120 个候选机会 → 84 个 eligible；强制行为排除。","hybrid"],
+        ["T03","指标计算","冻结公式生成有分子、分母、单位与血缘的指标。","EligibleEpisodes + Measurements","IndicatorBook","公式、单位、方向、窗口、零分母政策","建议公式/字段映射/测试","审核语义、血缘、单测","stable cash share=.70；buffer ratio=3.20。","code"],
+        ["T04","归因与 Rivals","区分长期取向、临时条件和外部限制。","IndicatorBook + rival facts","RivalReport","rival taxonomy、证据优先级、unknown/defer","归纳解释、生成案例摘要","判断 rival 是否完整、归因是否充分","4 个 episode 缺少大额义务信息 → UNKNOWN_DEFER。","hybrid"],
+        ["T05","方法家族合成","家族内聚合、家族间等权形成透明 RawTraitScore。","Aligned indicators","RawTraitScoreSet","家族边界、聚合、缺失不补 0","比较候选方案与差异","审核预注册方案和缺失处理","两个方法家族合成 raw score=.792。","code"],
+        ["T06","冻结百分位","只在 FIT 比较域拟合并冻结 mid-CDF transform。","FIT scores + domain","Percentiles","比较域、FIT-only、mid-CDF、版本政策","解释 transform 与文档一致性","审核可比性、split 安全、冻结版本","raw .792 → FIT percentile .81；不是购买概率。","code"],
+        ["T07","持续性检查","验证结果是否符合慢时钟与跨窗口稳定性。","P03 grid + split-half","StabilityReport","窗口网格、最低 episodes、drift 门槛","归纳失败模式","审核窗口与门槛，禁止事后放宽","两半 percentile .78/.84，drift=.06≤.20。","code"],
+        ["T08","构念验证","检验收敛、区分、时间与人群稳定性。","Reference + protected splits","TraitValidation","独立参照、group/time split、成功门槛","整理证据、发现报告缺口","负责人解释结果并签字","独立参照缺失 → NOT_YET_DEMONSTRATED。","human"],
+        ["T09","评审与发布","决定 retain、defer、reject 或 redefine。","Validation + evidence pack","ReleaseDecision","Gate B 条件、必需证据、用途、回滚","生成证据摘要和未解决风险","治理负责人作 Gate B 最终决策","当前建议 DEFER，不允许生产发布。","human"],
+        ["T10","每日评估","发布后用冻结包做 PIT 客户级评估。","ReleaseBundle + PIT facts","TraitAssessment","refresh、expiry、supersedes、QA/申诉","只基于 trace 生成解释","抽样 QA、申诉和 bad-case review","无 Gate B ReleaseBundle，因此 T10 锁定。","code"]]},
+      state:{label:"State / ST01 流动性积累状态",clock:"中时钟：进入、保持与退出",result:"T/F/U / Severity / Episode / Duration",gate:"Gate A: S01–S03 · Gate B: S08",steps:[
+        ["S01","状态定义","固定状态语义、方向、进入/保持/退出与 UNKNOWN。","Canonical State","StateStudySpec","状态语义、时间尺度、进出、rivals","拆解语义、提出 feature 候选","审核 StudySpec","ST01=相对自身基线持续异常积累，不是单日余额高。","hybrid"],
+        ["S02","纵向特征","构造 PIT 安全的时间序列 FeatureRows。","PIT facts","FeatureRows","事实字段、时间粒度、前缀安全、覆盖","起草 feature DAG 与测试","审核来源、时点、单位","按周生成 liquid_assets、commitments、net_flow。","code"],
+        ["S03","进入前基线","形成进入前 baseline 并冻结 anchor。","Pre-entry rows","BaselineArtifact","baseline 家族、lookback、anchor、防泄漏","提出 baseline 候选","审核 lookback 和适用性","进入后不滚动基线，避免吸收 episode 信号。","hybrid"],
+        ["S04","持续性","研究进入、保持、短缺测和退出 hysteresis。","Baseline + P04 grid","PersistenceEvidence","K/M 网格、最短持续、短缺测、退出","归纳持续期 bad case","冻结进出规则","候选：连续 3/4 周超过门槛才进入。","code"],
+        ["S05","竞争解释","排除工资、季节、内部转账、计划流量等解释。","Episodes + rivals","RivalReport","rival taxonomy、扣除政策、UNKNOWN","归纳 trace 与文本解释","审核归因充分性","计划性资产出售带来的积累不直接命名 ST01。","hybrid"],
+        ["S06","模型比较","比较规则、IID、HMM 与空模型。","Shared features/splits","ModelEvidence","模型菜单、共同 split、指标、复杂度 gate","生成实验配置和摘要","判断复杂模型是否可信改善","HMM 若无显著改善，保留透明规则模型。","code"],
+        ["S07","语义协调","判断匿名统计 component 能否命名为 ST01。","Components + reference","ReconciliationDecision","独立参照、命名证据、冲突条件","比较 component profile","专家决定命名/defer/reject","component 2 若与 ST01 语义冲突则 defer。","human"],
+        ["S08","冻结与确认","冻结版本并在未使用分区确认。","Selected model + policies","StateReleaseDecision","freeze 内容、confirmation split、门槛、用途","检查 evidence pack 完整性","Gate B 审核与签字","通过确认集后才产生 ST01 ReleaseBundle。","human"],
+        ["S09","每日推断","用发布包按顺序生成客户 StateEpisode。","ReleaseBundle + daily facts","StateAssessment","状态延续、缺测、版本与失效","生成可追溯解释","抽样 QA 和申诉","输出 T/F/U、severity、entered_at、duration。","code"],
+        ["S10","状态监控","监控覆盖、持续期、漂移、source 和未知率。","Daily assessments","MonitorFinding","告警门槛、分群、回退、bad case","聚类异常与摘要","决定调查、回退或新研究版本","UNKNOWN 激增触发 review，不自动改模型。","hybrid"]]},
+      signal:{label:"Signal / SG01 定存到期临近",clock:"快时钟：事件发生或临近",result:"Occurrence / T/F/U / Time / Relevance",gate:"Gate A: G01–G03 · Gate B: G08",steps:[
+        ["G01","事件定义","固定事件语义、scope、T/F/U 和候选窗口。","Canonical Signal","SignalDefinition","事件语义、候选窗口、T/F/U、用途","拆解描述、提出边界案例","审核 SignalDefinition","SG01=有效归属合同进入冻结到期窗口。","hybrid"],
+        ["G02","合同适配","把各来源合同统一到类型化事实。","PIT contract facts","NormalizedContractFact","来源优先级、字段映射、时点、单位","建议 adapter 与 schema diff","Data Owner 审核映射","due_at 冲突时返回 UNKNOWN，不猜日期。","code"],
+        ["G03","事件去重","定义一个事件及其 stable occurrence ID。","Normalized facts","CandidateOccurrence","stable key、去重、supersedes、reopen","归纳重复模式","审核生命周期规则","同一合同每天出现不等于每天新建事件。","code"],
+        ["G04","确定性评估","按冻结窗口计算 T/F/U。","Occurrence + as_of","SignalEvaluation","窗口边界、时区、冲突和 UNKNOWN","生成边界测试","审核窗口语义","到期日在未来 14 天内 → T；资料冲突 → U。","code"],
+        ["G05","范围与冲突","检查 ownership、scope、失效与竞争解释。","Evaluation + context","ScopeDecision","归属、失效、产品状态、conflict","归纳异常原因","审核 scope 与冲突政策","已终止或不属该客户的合同不进入有效结果。","hybrid"],
+        ["G06","相关性隔离","把 occurrence、daily evaluation、relevance 分开。","Occurrence + business context","RelevanceEvidence","relevance horizon、用途、可行性","解释已授权背景","审核不能把相关性当发生事实","事件可发生但对当前工作不一定 relevant。","hybrid"],
+        ["G07","事件验证","用独立合同参照验证 detector。","Protected reference","SignalValidation","标签、split、precision/recall、adverse checks","整理误报/漏报","负责人签字","用合同真值而非销售反应作为 SG01 标签。","human"],
+        ["G08","冻结发布","冻结 detector、adapter、窗口和用途。","Validation + evidence pack","SignalReleaseDecision","版本依赖、用途、有效期、回滚","检查证据完整性","Gate B 决策","批准后才能进入每日 SG01 评估。","human"],
+        ["G09","每日评估","对具体合同每日评估并维护 occurrence。","ReleaseBundle + PIT facts","SignalAssessment","刷新、expiry、supersedes、QA","基于 trace 生成解释","抽样 QA 和申诉","输出 T/F/U、due_at、days_to_event、relevance。","code"],
+        ["G10","事件监控","监控来源、重复率、生命周期和 UNKNOWN。","Daily signal outputs","MonitorFinding","覆盖、重复、延迟、未知、回退门槛","聚类 bad case","决定修源、修配置或新版本","due_at 来源变化导致 UNKNOWN 激增时告警。","hybrid"]]}
+    };
+    const typeLabel={hybrid:"HYBRID",code:"CODE",human:"HUMAN-VALID"};
+    function renderLine(key){
+      const line=lines[key];
+      document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.line===key));
+      document.getElementById('line-summary').innerHTML=`<div><label>研究对象</label><strong>${line.label}</strong></div><div><label>时钟与输出</label><strong>${line.clock} · ${line.result}</strong></div><div><label>审批模式</label><strong>${line.gate}</strong></div>`;
+      document.getElementById('steps').innerHTML=line.steps.map((s,i)=>`<article class="step-card ${[0,1,7,8].includes(i)?'gate-step':''} ${i===9?'release-step':''}"><button class="step-toggle" aria-expanded="false"><div class="step-top"><span class="step-id">${s[0]}</span><span class="badge ${s[9]}">${typeLabel[s[9]]}</span></div><h4>${s[1]}</h4><p class="purpose">${s[2]}</p></button><div class="step-detail"><div class="io"><div><label>INPUT</label><span>${s[3]}</span></div><div><label>OUTPUT</label><span>${s[4]}</span></div></div><div class="responsibility"><div class="rline"><b>人工预设</b>${s[5]}</div><div class="rline"><b>LLM 辅助</b>${s[6]}</div><div class="rline"><b>人工验证</b>${s[7]}</div></div><div class="example"><b>例子：</b>${s[8]}</div></div></article>`).join('');
+      document.querySelectorAll('.step-toggle').forEach(btn=>btn.addEventListener('click',()=>{const card=btn.closest('.step-card');const open=card.classList.toggle('open');btn.setAttribute('aria-expanded',String(open));}));
+    }
+    document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>renderLine(btn.dataset.line)));
+    renderLine('trait');
+  </script>
+</body>
+</html>

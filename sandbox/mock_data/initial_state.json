@@ -1,0 +1,43 @@
+{
+  "reviews": [
+    {
+      "id":"RV-203","object_id":"TR02","line":"trait","type":"Gate B","risk":"HIGH","status":"PENDING","assignee":"Grace Cui","trigger":"T08 缺少独立构念参照","created_at":"2026-10-28T14:34:00+08:00",
+      "summary_zh":"审阅 TR02 自动研究结果，决定 Sandbox Release、Defer、Reject 或 Redefine。",
+      "decision":null
+    },
+    {
+      "id":"RV-202","object_id":"ST01","line":"state","type":"Gate A","risk":"MEDIUM","status":"IN_REVIEW","assignee":"Grace Cui","trigger":"研究设计提交","created_at":"2026-10-28T11:20:00+08:00",
+      "summary_zh":"确认进入后 baseline 不滚动、P04 网格和 rival policy。",
+      "decision":null
+    },
+    {
+      "id":"RV-198","object_id":"SG01","line":"signal","type":"Definition","risk":"LOW","status":"DRAFT","assignee":"Grace Cui","trigger":"Cold Start","created_at":"2026-10-27T16:05:00+08:00",
+      "summary_zh":"完成事件语义、候选到期窗口、T/F/U 和允许用途。",
+      "decision":null
+    }
+  ],
+  "runs": [
+    {
+      "id":"run-tr02-20261028-1432","object_id":"TR02","line":"trait","status":"WARNING","snapshot_id":"snap-2026-10-28-001","config_version":"tr02-draft-v3","started_at":"2026-10-28T14:32:00+08:00","duration_seconds":101,"parent_run":null
+    },
+    {
+      "id":"run-tr02-20261026-0920","object_id":"TR02","line":"trait","status":"FAILED","snapshot_id":"snap-2026-10-25-001","config_version":"tr02-draft-v2","started_at":"2026-10-26T09:20:00+08:00","duration_seconds":74,"parent_run":null
+    }
+  ],
+  "draft_changes": [
+    {
+      "id":"CH-44","object_id":"ST01","step_id":"S03","field":"baseline_rolling_after_entry","current":true,"suggested":false,"status":"ACCEPTED_TO_DRAFT","source":"LLM_ASSIST","reason_zh":"进入后滚动基线会吸收 episode 信号，应冻结进入前 anchor。"
+    }
+  ],
+  "bad_cases": [
+    {"id":"BC-017","object_id":"TR02","step_id":"T04","severity":"MEDIUM","type":"RIVAL_UNKNOWN","count":4,"status":"OPEN","first_seen":"2026-10-28","summary_zh":"四个 episode 缺少完整的近期大额义务信息。"},
+    {"id":"BC-012","object_id":"TR02","step_id":"T02","severity":"LOW","type":"AMBIGUOUS_OWNER","count":7,"status":"TRIAGED","first_seen":"2026-10-26","summary_zh":"联名账户的 ownership 映射需要 Data Owner 确认。"},
+    {"id":"BC-009","object_id":"TR02","step_id":"T08","severity":"HIGH","type":"REFERENCE_MISSING","count":1,"status":"BLOCKING","first_seen":"2026-10-25","summary_zh":"没有可用于 CERT/FINAL 的独立构念参照。"}
+  ],
+  "audit_log": [
+    {"at":"2026-10-28T14:34:00+08:00","actor":"system","action":"CREATE_REVIEW","target":"RV-203"},
+    {"at":"2026-10-28T14:33:41+08:00","actor":"sandbox-engine","action":"FINISH_RUN","target":"run-tr02-20261028-1432"},
+    {"at":"2026-10-28T11:22:10+08:00","actor":"Grace Cui","action":"ACCEPT_LLM_PATCH_TO_DRAFT","target":"CH-44"}
+  ]
+}
+

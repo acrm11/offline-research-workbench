@@ -1,0 +1,53 @@
+{
+  "trait": {
+    "label": "Trait",
+    "label_zh": "Trait 慢时钟",
+    "description": "研究长期稳定取向；MVP 使用 TR02 演示完整 T01–T10。",
+    "steps": [
+      {"id":"T01","title":"Target & Definition","title_zh":"对象定义","purpose":"固定 canonical meaning、正反例、UNKNOWN、禁止解释与允许用途。","input":"Canonical Registry seed","output":"TraitStudySpec","preset":["canonical 含义","正例/反例/UNKNOWN","候选指标家族","rivals","允许用途"],"llm":"起草 StudySpec、补充边界案例与 rival 候选。","human":"逐项审核对象语义并批准定义版本。"},
+      {"id":"T02","title":"Opportunity Construction","title_zh":"证据机会与 Eligibility","purpose":"定义什么才是真实、自主、可观察的选择机会。","input":"TraitStudySpec + OpportunityBook","output":"EligibleEpisodeSet","preset":["自主选择定义","eligible 分母","排除规则","reason codes"],"llm":"从 bad case 起草 eligibility 与边界案例。","human":"用标注样本审核分母和排除边界。"},
+      {"id":"T03","title":"Indicator Calculation","title_zh":"指标计算","purpose":"按冻结公式生成带分子、分母、单位和血缘的指标。","input":"EligibleEpisodes + MeasurementValues","output":"IndicatorBook","preset":["指标公式","单位与方向","窗口","零分母与缺失政策"],"llm":"建议公式草案、字段映射与测试。","human":"审核公式语义、血缘和单元测试。"},
+      {"id":"T04","title":"Attribution & Rivals","title_zh":"归因与竞争解释","purpose":"区分长期取向、临时条件和外部限制。","input":"IndicatorBook + rival evidence","output":"RivalReport","preset":["rival taxonomy","证据优先级","explained/unknown/defer"],"llm":"归纳候选解释并生成案例摘要。","human":"判断 rival 是否完整、归因是否充分。"},
+      {"id":"T05","title":"Family Scorecard","title_zh":"方法家族合成","purpose":"家族内聚合、家族间等权形成透明 comparator。","input":"Direction-aligned indicators","output":"RawTraitScoreSet","preset":["家族边界","聚合菜单","缺失不补 0","选择指标"],"llm":"解释候选方案和结果差异。","human":"审核预注册方案、缺失处理和选择证据。"},
+      {"id":"T06","title":"Frozen Percentile","title_zh":"冻结百分位","purpose":"只在 FIT 比较域拟合并冻结 mid-CDF transform。","input":"FIT raw scores + comparable domain","output":"PercentileTransform + Percentiles","preset":["comparable domain","FIT-only","mid-CDF","版本政策"],"llm":"解释 transform 和检查文档一致性。","human":"审核人群可比性、split 安全和冻结版本。"},
+      {"id":"T07","title":"Persistence","title_zh":"持续性检查","purpose":"验证 Trait 是否符合慢时钟与跨窗口稳定性。","input":"P03 grid + split-half evidence","output":"StabilityReport","preset":["窗口网格","最低 episodes","最低方法家族","drift 门槛"],"llm":"归纳失败模式和生成 review 摘要。","human":"审核窗口选择与门槛，禁止事后放宽。"},
+      {"id":"T08","title":"Construct Validation","title_zh":"构念验证","purpose":"检验收敛、区分、时间和人群稳定性。","input":"Independent reference + protected splits","output":"TraitValidation","preset":["独立参照","group/time split","成功门槛","adverse checks"],"llm":"整理证据、发现报告缺口、聚类 bad case。","human":"研究负责人解释结果并签字。"},
+      {"id":"T09","title":"Review & Release","title_zh":"评审与发布","purpose":"决定 retain、defer、reject 或 redefine。","input":"Validation + evidence pack","output":"TraitReleaseDecision","preset":["Gate B 条件","必需证据","permitted use","回滚规则"],"llm":"生成 evidence pack 摘要和未解决风险。","human":"治理负责人完成最终 Gate B 决策。"},
+      {"id":"T10","title":"Daily Assessment","title_zh":"每日评估","purpose":"发布后使用冻结包进行 PIT 客户级评估。","input":"ReleaseBundle + PIT facts","output":"TraitAssessment","preset":["refresh","expiry","supersedes","QA/申诉"],"llm":"只能基于 trace 生成解释。","human":"抽样 QA、申诉和 bad-case review。"}
+    ]
+  },
+  "state": {
+    "label": "State",
+    "label_zh": "State 中时钟",
+    "description": "研究持续状态、进入、保持与退出；MVP 使用 ST01 展示 Gate A 冷启动。",
+    "steps": [
+      {"id":"S01","title":"Target & Candidate","title_zh":"状态定义","purpose":"固定状态语义、方向、进出与 UNKNOWN。","input":"Canonical State seed","output":"StateStudySpec","preset":["状态语义","时间尺度","进入/保持/退出","rivals"],"llm":"拆解语义并提出 feature 候选。","human":"审核 StateStudySpec。"},
+      {"id":"S02","title":"Longitudinal Feature","title_zh":"纵向特征","purpose":"构造 PIT 安全的时间序列特征。","input":"PIT facts","output":"FeatureRows","preset":["事实字段","时间粒度","前缀安全","覆盖"],"llm":"起草 feature DAG 与测试。","human":"审核来源、时点和单位。"},
+      {"id":"S03","title":"Entry Baseline","title_zh":"进入前基线","purpose":"形成进入前基线并冻结 anchor。","input":"Pre-entry FeatureRows","output":"BaselineArtifact","preset":["baseline 家族","lookback","anchor","防泄漏"],"llm":"提出候选 baseline。","human":"审核 lookback 和适用性。"},
+      {"id":"S04","title":"Persistence","title_zh":"持续性","purpose":"研究进入、保持、缺测和退出 hysteresis。","input":"Baseline + P04 grid","output":"PersistenceEvidence","preset":["K/M 网格","最短持续","短缺测","退出 hysteresis"],"llm":"归纳持续期 bad case。","human":"冻结进出规则。"},
+      {"id":"S05","title":"Rival Controls","title_zh":"竞争解释","purpose":"排除工资、季节、内部转账、计划流量等解释。","input":"Candidate episodes + rivals","output":"RivalReport","preset":["rival taxonomy","扣除政策","UNKNOWN"],"llm":"归纳 trace 和文本解释。","human":"审核归因充分性。"},
+      {"id":"S06","title":"Model Comparison","title_zh":"模型比较","purpose":"比较规则、IID、HMM 和空模型。","input":"Shared features/splits","output":"StateModelEvidence","preset":["模型菜单","共同 split","比较指标","复杂度 gate"],"llm":"生成实验配置草案与摘要。","human":"判断复杂模型是否可信改善。"},
+      {"id":"S07","title":"Semantic Reconciliation","title_zh":"语义协调","purpose":"判断匿名 component 能否命名为 ST01。","input":"Anonymous components + reference","output":"ReconciliationDecision","preset":["独立参照","命名证据","冲突条件"],"llm":"比较 component profile。","human":"专家决定命名/defer/reject。"},
+      {"id":"S08","title":"Freeze & Confirm","title_zh":"冻结与确认","purpose":"冻结版本并在未使用分区确认。","input":"Selected model + policies","output":"StateReleaseDecision","preset":["freeze 内容","confirmation split","门槛","permitted use"],"llm":"检查 evidence pack 完整性。","human":"审核风险并批准 release/defer。"},
+      {"id":"S09","title":"Daily Inference","title_zh":"每日推断","purpose":"前向判断进入、保持、退出、OOD、UNKNOWN。","input":"Frozen release + current row","output":"StateAssessment + Episode","preset":["前向推断","episode anchor","缺测","supersedes"],"llm":"仅生成 trace 解释。","human":"抽样 QA 与 episode review。"},
+      {"id":"S10","title":"Monitor","title_zh":"状态监控","purpose":"监控占用率、持续期、转移和 bad case。","input":"Versioned episodes + labels","output":"MonitorFinding","preset":["告警指标","阈值","处置流程"],"llm":"聚类 bad case 并起草 ReviewTask。","human":"决定重研、暂停或新版本。"}
+    ]
+  },
+  "signal": {
+    "label": "Signal",
+    "label_zh": "Signal 快时钟",
+    "description": "研究事件、变化与临近里程碑；MVP 使用 SG01 展示 Cold Start。",
+    "steps": [
+      {"id":"G01","title":"Event Definition","title_zh":"事件定义","purpose":"固定事件语义、scope、T/F/U 和候选窗口。","input":"Canonical Signal seed","output":"SignalDefinition","preset":["事件语义","候选窗口","T/F/U","允许用途"],"llm":"拆解业务描述并提出边界案例。","human":"审核 SignalDefinition。"},
+      {"id":"G02","title":"Contract Adapter","title_zh":"合同适配","purpose":"标准化 owner、status、due_at 与双时间。","input":"Source contract records","output":"NormalizedContractFactSet","preset":["权威来源","字段","状态映射","时区"],"llm":"建议 schema mapping 和测试。","human":"Data Owner 确认映射。"},
+      {"id":"G03","title":"Deduplication","title_zh":"事件去重","purpose":"形成稳定 occurrence key 和修订链。","input":"Normalized facts","output":"SignalOccurrence","preset":["occurrence key","同一事件","revision","supersedes"],"llm":"从重复 bad case 提议规则。","human":"审核事件身份语义。"},
+      {"id":"G04","title":"Deterministic Evaluation","title_zh":"确定性评估","purpose":"按冻结窗口生成 T/F/UNKNOWN。","input":"due_at + as_of + status","output":"SignalEvaluation","preset":["窗口","日历","边界","UNKNOWN"],"llm":"生成规则草案和边界测试。","human":"审核窗口与日历口径。"},
+      {"id":"G05","title":"Scope & Rival","title_zh":"范围与冲突","purpose":"处理归属、失效合同、日期和来源冲突。","input":"Owner/status/date/source","output":"EvidenceStatus","preset":["冲突政策","来源权威","reason codes"],"llm":"归纳冲突模式。","human":"审核异常和 UNKNOWN。"},
+      {"id":"G06","title":"Relevance","title_zh":"相关性隔离","purpose":"分开 occurrence、daily evaluation 与 consumer relevance。","input":"Occurrence + consumer context","output":"SignalRelevance","preset":["对象边界","consumer allowlist","禁止推导"],"llm":"列举误用场景。","human":"审核下游权限。"},
+      {"id":"G07","title":"Validation","title_zh":"事件验证","purpose":"计算误报、漏报、延迟、重复和修订质量。","input":"Independent lifecycle reference","output":"SignalValidation","preset":["匹配政策","指标","time placebo","门槛"],"llm":"聚类误报/漏报。","human":"确认参照与结论。"},
+      {"id":"G08","title":"Release","title_zh":"冻结发布","purpose":"冻结 detector 与 permitted use。","input":"Validation + detector config","output":"SignalReleaseDecision","preset":["冻结内容","release gate","permitted use"],"llm":"整理 evidence pack。","human":"决定 release/defer/reject。"},
+      {"id":"G09","title":"Daily Evaluation","title_zh":"每日评估","purpose":"每日生成 occurrence 与 T/F/U。","input":"Frozen release + PIT contract facts","output":"DailySignalEvaluation","preset":["daily as_of","去重","supersedes"],"llm":"仅生成解释。","human":"抽样 QA 与事件对账。"},
+      {"id":"G10","title":"Monitor","title_zh":"事件监控","purpose":"监控重复、延迟、UNKNOWN、修订和越权。","input":"Versioned events + source health","output":"SignalMonitorFinding","preset":["质量指标","告警阈值","暂停规则"],"llm":"聚类异常并起草 ReviewTask。","human":"决定暂停、重研或新版本。"}
+    ]
+  }
+}

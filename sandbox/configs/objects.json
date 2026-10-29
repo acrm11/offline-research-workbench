@@ -1,0 +1,90 @@
+{
+  "objects": [
+    {
+      "id": "TR02",
+      "name": "Liquidity Buffer Orientation",
+      "name_zh": "流动性缓冲取向",
+      "alias": "Liquidity Preference",
+      "line": "trait",
+      "owner": "Grace Cui",
+      "status": "ACTIVE_WORKING",
+      "version": "tr02-draft-v3",
+      "active_version": "tr02-active-v2",
+      "current_stage": "T09",
+      "current_stage_zh": "Gate B 评审",
+      "gate_a": "APPROVED",
+      "automated_run": "WARNING",
+      "gate_b": "PENDING",
+      "validation": "NOT_YET_DEMONSTRATED",
+      "last_run": "2026-10-28T14:32:00+08:00",
+      "snapshot_id": "snap-2026-10-28-001",
+      "description_zh": "在真实自主选择机会下，研究客户是否持续倾向保留流动性缓冲。",
+      "config": {
+        "research_question": "在真实自主选择机会下，客户是否持续倾向保留流动性缓冲？",
+        "indicator_families": ["stable_cash_share", "liquidity_buffer_ratio", "deposit_rollover_persistence"],
+        "rivals": ["pending_purchase", "working_capital", "recent_maturity", "uncertainty"],
+        "prohibited_interpretations": ["current_cash_level_is_the_trait", "trait_percentile_is_purchase_probability"],
+        "p03_grid": {
+          "window_days": [90, 180, 365],
+          "minimum_episodes": [6, 12, 24],
+          "maximum_drift": [0.1, 0.2, 0.3]
+        },
+        "context_policy": "context-policy-trait-v1",
+        "permitted_use": ["sandbox_research", "validation_review"]
+      }
+    },
+    {
+      "id": "ST01",
+      "name": "Liquidity Accumulation",
+      "name_zh": "流动性积累状态",
+      "line": "state",
+      "owner": "Grace Cui",
+      "status": "DRAFT",
+      "version": "st01-draft-v1",
+      "active_version": null,
+      "current_stage": "S01",
+      "current_stage_zh": "Gate A 设计审核",
+      "gate_a": "IN_REVIEW",
+      "automated_run": "NOT_STARTED",
+      "gate_b": "LOCKED",
+      "validation": "NOT_STARTED",
+      "last_run": null,
+      "snapshot_id": "snap-2026-10-28-001",
+      "description_zh": "相对于客户自身与上下文基线，研究流动资产是否持续异常积累。",
+      "config": {
+        "state_meaning": "Sustained abnormal build-up of liquid assets relative to client/context baseline",
+        "grain": "weekly",
+        "baseline_rolling_after_entry": false,
+        "p04_grid": {"k_weeks":[3,4,6],"m_support":[2,3,4]},
+        "rivals": ["salary_cycle", "seasonality", "internal_transfer", "planned_flow", "source_revision"]
+      }
+    },
+    {
+      "id": "SG01",
+      "name": "TD Maturity Approaching",
+      "name_zh": "定存到期临近",
+      "line": "signal",
+      "owner": "Grace Cui",
+      "status": "DRAFT",
+      "version": "sg01-draft-v0",
+      "active_version": null,
+      "current_stage": "G01",
+      "current_stage_zh": "事件定义",
+      "gate_a": "DRAFT",
+      "automated_run": "NOT_STARTED",
+      "gate_b": "LOCKED",
+      "validation": "NOT_STARTED",
+      "last_run": null,
+      "snapshot_id": "snap-2026-10-28-001",
+      "description_zh": "研究有效且可归属的定存合同是否进入冻结的到期窗口。",
+      "config": {
+        "event_meaning": "Valid attributable TD contract enters the frozen maturity window",
+        "candidate_window_days": [7, 14, 30],
+        "calendar": "calendar_day",
+        "unknown_on_conflict": true,
+        "permitted_use": ["sandbox_research"]
+      }
+    }
+  ]
+}
+

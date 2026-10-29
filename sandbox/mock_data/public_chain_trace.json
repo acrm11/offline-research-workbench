@@ -1,0 +1,33 @@
+{
+  "request_id":"req-tr02-c001-20261001-001",
+  "subject_id":"C001",
+  "as_of":"2026-10-01T23:59:59+08:00",
+  "pit_example": [
+    {"record_id":"BAL-v1","effective_at":"2026-09-30","known_at":"2026-10-01T08:00:00+08:00","stable_liquid_assets":1400000,"selected":true},
+    {"record_id":"BAL-v2","effective_at":"2026-09-30","known_at":"2026-10-05T10:00:00+08:00","stable_liquid_assets":1100000,"selected":false,"reason":"FUTURE_KNOWN"}
+  ],
+  "opportunities": [
+    {"id":"O01","date":"2026-04-08","event":"TD 到期后配置","availability":true,"choice":"VOLUNTARY","result_complete":true,"status":"OBSERVABLE"},
+    {"id":"O02","date":"2026-05-03","event":"TD 到期后配置","availability":true,"choice":"VOLUNTARY","result_complete":true,"status":"OBSERVABLE"},
+    {"id":"O03","date":"2026-05-28","event":"资金重新配置","availability":true,"choice":"VOLUNTARY","result_complete":true,"status":"OBSERVABLE"},
+    {"id":"O04","date":"2026-06-21","event":"TD 到期后配置","availability":true,"choice":"VOLUNTARY","result_complete":true,"status":"OBSERVABLE"},
+    {"id":"O05","date":"2026-07-17","event":"TD 到期后配置","availability":true,"choice":"VOLUNTARY","result_complete":true,"status":"OBSERVABLE"},
+    {"id":"O06","date":"2026-09-10","event":"TD 到期后配置","availability":true,"choice":"VOLUNTARY","result_complete":true,"status":"OBSERVABLE"},
+    {"id":"O07","date":"2026-08-02","event":"TD 自动续存","availability":true,"choice":"FORCED","result_complete":true,"status":"FORCED"},
+    {"id":"O08","date":"2026-08-25","event":"资金重新配置","availability":false,"choice":"VOLUNTARY","result_complete":true,"status":"NO_OPPORTUNITY"},
+    {"id":"O09","date":"2026-09-25","event":"TD 到期后配置","availability":true,"choice":"VOLUNTARY","result_complete":false,"status":"SOURCE_MISSING"}
+  ],
+  "measurements": [
+    {"id":"stable_cash_share.v1","value":0.70,"numerator":1400000,"denominator":2000000,"unit":"ratio","coverage":"COMPLETE"},
+    {"id":"liquidity_buffer_ratio.v1","value":3.20,"numerator":1400000,"denominator":437500,"unit":"x","coverage":"COMPLETE"},
+    {"id":"deposit_rollover_persistence.v1","value":0.8333,"numerator":5,"denominator":6,"unit":"ratio","coverage":"COMPLETE"}
+  ],
+  "adequacy": [
+    {"check":"Evidence span","observed":"155 days","threshold":">= 90","status":"PASS"},
+    {"check":"Distinct observable episodes","observed":"6","threshold":">= 6","status":"PASS"},
+    {"check":"Independent method families","observed":"2","threshold":">= 2","status":"PASS"},
+    {"check":"First-half complete episodes","observed":"3","threshold":">= 3","status":"PASS"},
+    {"check":"Second-half complete episodes","observed":"3","threshold":">= 3","status":"PASS"},
+    {"check":"Independent construct reference","observed":"Missing","threshold":"Required for T08","status":"FAIL"}
+  ]
+}

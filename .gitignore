@@ -1,0 +1,25 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Sandbox runtime is generated locally after the first launch.
+sandbox/runtime/state.json
+sandbox/runtime/*.tmp
+
+# Secrets and local environment files must never be committed.
+.env
+.env.*
+*.key
+*.pem
+secrets/
+real_data/
+client_data/
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+

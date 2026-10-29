@@ -1,0 +1,219 @@
+{
+  "run_id": "run-tr02-20261028-1432",
+  "object_id": "TR02",
+  "environment": "Sandbox",
+  "snapshot_id": "snap-2026-10-28-001",
+  "config_version": "tr02-draft-v3",
+  "kernel_version": "v0.8.4-sandbox",
+  "started_at": "2026-10-28T14:32:00+08:00",
+  "finished_at": "2026-10-28T14:33:41+08:00",
+  "status": "WARNING",
+  "steps": {
+    "T01": {
+      "status": "PASSED",
+      "summary_zh": "TR02 对象定义已编译，明确流动性缓冲取向不是当前现金水平，也不是购买概率。",
+      "input": {"registry_id":"TR02","definition_version":"D1/V0"},
+      "output": {"artifact":"TR02.TraitStudySpec.v1","indicator_family_count":3,"rival_count":4},
+      "metrics": {"positive_examples":12,"negative_examples":9,"unknown_examples":7},
+      "example": {
+        "case_id":"TR02-DEF-001",
+        "title_zh":"把业务词“偏好流动性”编译成可研究对象",
+        "input_story":"Registry 中已有 TR02 D1/V0，但还不能直接拿去给客户打分。",
+        "calculation":["固定含义：在真实自主选择机会下，是否持续保留流动性缓冲","明确禁止解释：当前现金水平高 ≠ Trait 高；Trait percentile ≠ 购买概率","整理 12 个正例、9 个反例、7 个 UNKNOWN 边界例"],
+        "output_story":"生成 TR02.TraitStudySpec.v1，包含 3 个指标家族和 4 类 rivals，等待 Gate A 使用。",
+        "sample_rows":[
+          {"label":"POSITIVE","mock_case":"三次定存到期均保留部分活期缓冲","reason":"反复自主选择"},
+          {"label":"NEGATIVE","mock_case":"资金全部转入长期产品且无已知短期义务","reason":"未表现缓冲取向"},
+          {"label":"UNKNOWN","mock_case":"账户现金高但下月存在未完整记录的大额义务","reason":"竞争解释未排除"}
+        ]
+      }
+    },
+    "T02": {
+      "status": "PASSED",
+      "summary_zh": "候选机会已按自主选择、产品可得性和结果完整性筛选。",
+      "input": {"opportunity_book":"opp-tr02-20261028","candidate_count":120},
+      "output": {"artifact":"eligible-tr02-20261028","eligible_count":84},
+      "metrics": {"candidate":120,"eligible":84,"forced":14,"no_opportunity":8,"source_missing":7,"ambiguous_owner":7},
+      "example": {
+        "case_id":"TR02-OPP-C001-180D",
+        "title_zh":"从 120 个候选事件中构造真正可用的证据机会",
+        "input_story":"客户 C001 在 180 天窗口内有定存到期、现金配置和自动续存等 120 个候选事件。",
+        "calculation":["检查当时是否真的存在可选择产品","排除系统强制行为、来源缺失和归属不清","保留完整分母及 reason code，不能只留下成功样本"],
+        "output_story":"84 个事件进入 EligibleEpisodeSet；其余 36 个保留排除原因用于审计。",
+        "sample_rows":[
+          {"opportunity_id":"OPP-001","event":"定存到期后客户主动选择","eligible":true,"reason":"VOLUNTARY_CHOICE"},
+          {"opportunity_id":"OPP-014","event":"系统自动续存且不可更改","eligible":false,"reason":"FORCED"},
+          {"opportunity_id":"OPP-073","event":"联名账户 owner 映射不清","eligible":false,"reason":"AMBIGUOUS_OWNER"}
+        ]
+      }
+    },
+    "T03": {
+      "status": "PASSED",
+      "summary_zh": "三个候选指标已生成并保留分子、分母、单位和来源血缘。",
+      "input": {"eligible_episode_count":84,"measurement_set":"ms-tr02-20261028"},
+      "output": {"artifact":"TR02.IndicatorBook.v3","method_families":2},
+      "metrics": {"stable_cash_share":0.70,"liquidity_buffer_ratio":3.20,"buffer_fit_normalized":0.80,"rollover_persistence":0.833},
+      "example": {
+        "case_id":"TR02-IND-C001-180D",
+        "title_zh":"用冻结公式计算三个候选指标",
+        "input_story":"输入 84 个 eligible episodes 和 ms-tr02-20261028 类型化测量集合。",
+        "calculation":["stable_cash_share = 稳定流动资产 140 万 / 可配置金融资产 200 万 = 0.70","liquidity_buffer_ratio = 稳定流动资产 160 万 / 已知 90 日义务 50 万 = 3.20","rollover_persistence = 5 次保留流动性 / 6 次有效到期选择 = 0.833"],
+        "output_story":"生成 TR02.IndicatorBook.v3；每个值都保留公式、分子、分母、单位和来源血缘。",
+        "sample_rows":[
+          {"indicator":"stable_cash_share","numerator":"1,400,000","denominator":"2,000,000","value":0.70},
+          {"indicator":"liquidity_buffer_ratio","numerator":"1,600,000","denominator":"500,000","value":3.20},
+          {"indicator":"rollover_persistence","numerator":"5 choices","denominator":"6 choices","value":0.833}
+        ]
+      }
+    },
+    "T04": {
+      "status": "WARNING",
+      "summary_zh": "已处理主要竞争解释，但仍保留无法完全消除的不确定性。",
+      "input": {"indicator_book":"TR02.IndicatorBook.v3","rivals":["pending_purchase","working_capital","recent_maturity","uncertainty"]},
+      "output": {"artifact":"TR02.RivalReport.v3","status":"RECONCILED_WITH_RESIDUAL_UNCERTAINTY"},
+      "metrics": {"explained":18,"unresolved":4,"unknown":2},
+      "example": {
+        "case_id":"TR02-RIVAL-C001",
+        "title_zh":"判断流动性表现是否被临时义务解释",
+        "input_story":"IndicatorBook 显示缓冲较高，但 24 个关键 episode 需要逐类检查竞争解释。",
+        "calculation":["18 个 episode 的 pending purchase / working capital 已有充分证据，可解释并扣除","4 个 episode 义务资料不完整，保留 unresolved","2 个 episode 同时存在相互冲突来源，返回 UNKNOWN"],
+        "output_story":"RivalReport 状态为 RECONCILED_WITH_RESIDUAL_UNCERTAINTY；不把不确定性静默当成 0。",
+        "sample_rows":[
+          {"episode":"EP-031","rival":"pending_purchase","evidence":"购房付款计划已确认","decision":"EXPLAINED"},
+          {"episode":"EP-044","rival":"working_capital","evidence":"义务字段不完整","decision":"UNKNOWN_DEFER"},
+          {"episode":"EP-052","rival":"recent_maturity","evidence":"两个来源日期冲突","decision":"UNKNOWN"}
+        ]
+      }
+    },
+    "T05": {
+      "status": "PASSED",
+      "summary_zh": "两个独立方法家族已按冻结聚合方案形成透明 RawTraitScore。",
+      "input": {"balance_structure_family":0.75,"maturity_decision_family":0.833},
+      "output": {"artifact":"TR02.RawTraitScoreSet.v3","raw_trait_score":0.792},
+      "metrics": {"family_count":2,"raw_score":0.792},
+      "example": {
+        "case_id":"TR02-SCORE-C001",
+        "title_zh":"两个独立方法家族等权合成 RawTraitScore",
+        "input_story":"余额结构家族得分 0.750；到期决策家族得分 0.833。",
+        "calculation":["每个家族内部先按冻结聚合规则合成","家族间等权，避免指标多的家族自动占更大权重","raw score = (0.750 + 0.833) / 2 = 0.7915 → 0.792"],
+        "output_story":"生成透明的 TR02.RawTraitScoreSet.v3，保留每个家族的贡献。",
+        "sample_rows":[
+          {"family":"balance_structure","score":0.750,"weight":0.5,"contribution":0.375},
+          {"family":"maturity_decision","score":0.833,"weight":0.5,"contribution":0.4165},
+          {"family":"TOTAL","score":0.792,"weight":1.0,"contribution":0.792}
+        ]
+      }
+    },
+    "T06": {
+      "status": "PASSED",
+      "summary_zh": "使用 FIT 比较域冻结的 mid-CDF transform 得到相对百分位。",
+      "input": {"raw_score":0.792,"transform":"TR02.midcdf.fit.v2"},
+      "output": {"artifact":"TR02.Percentiles.v3","percentile":0.81},
+      "metrics": {"percentile":0.81,"probability":null},
+      "example": {
+        "case_id":"TR02-PCTL-C001",
+        "title_zh":"把 RawTraitScore 放入冻结 FIT 比较域",
+        "input_story":"C001 raw score=0.792；使用 TR02.midcdf.fit.v2，FIT 域包含 18,340 个可比研究样本。",
+        "calculation":["只使用 FIT 域拟合经验分布，CERT/FINAL 不参与 transform","mid-CDF 对并列值进行中点处理","0.792 在冻结比较域中的 percentile=0.81"],
+        "output_story":"输出 percentile 0.81；probability 明确为 null，因为当前证据只支持相对排名。",
+        "sample_rows":[
+          {"field":"raw_score","value":0.792,"meaning":"冻结方案的透明原始分"},
+          {"field":"percentile","value":0.81,"meaning":"高于 81% 的可比 FIT 样本"},
+          {"field":"probability","value":null,"meaning":"未做概率校准，不得展示为概率"}
+        ]
+      }
+    },
+    "T07": {
+      "status": "PASSED",
+      "summary_zh": "分半漂移小于预注册门槛，慢时钟持续性检查通过。",
+      "input": {"window_days":180,"minimum_episodes":6,"max_drift":0.20},
+      "output": {"artifact":"TR02.StabilityReport.v3","pass":true},
+      "metrics": {"first_half_percentile":0.78,"second_half_percentile":0.84,"drift":0.06,"threshold":0.20},
+      "example": {
+        "case_id":"TR02-STABILITY-C001",
+        "title_zh":"用分半与窗口网格验证慢时钟稳定性",
+        "input_story":"冻结窗口 180 天，最低 6 个 episodes，最大允许 drift=0.20。",
+        "calculation":["前半窗口 percentile=0.78","后半窗口 percentile=0.84","absolute drift=|0.84-0.78|=0.06，小于预注册门槛 0.20"],
+        "output_story":"StabilityReport.pass=true；通过的是稳定性检查，不等于构念验证已完成。",
+        "sample_rows":[
+          {"period":"Day 1–90","episodes":7,"percentile":0.78},
+          {"period":"Day 91–180","episodes":8,"percentile":0.84},
+          {"period":"Split-half drift","episodes":15,"percentile":0.06}
+        ]
+      }
+    },
+    "T08": {
+      "status": "WARNING",
+      "summary_zh": "缺少冻结的 CERT/FINAL 独立构念参照，不能宣布 TR02 已验证。",
+      "input": {"split_manifest":"split-tr02-v2","independent_reference":null},
+      "output": {"artifact":"TR02.TraitValidation.v3","status":"NOT_YET_DEMONSTRATED"},
+      "metrics": {"measurement_ready":true,"construct_validation_ready":false},
+      "example": {
+        "case_id":"TR02-VALIDATION-V3",
+        "title_zh":"测量可运行，但独立构念参照不足",
+        "input_story":"split-tr02-v2 已冻结；Measurement 与稳定性证据齐全，但 CERT/FINAL 没有独立构念参照。",
+        "calculation":["Measurement readiness：PASS","Temporal stability：PASS","Independent construct reference：FAIL","根据预注册 protocol，任何关键参照 FAIL 都必须 DEFER"],
+        "output_story":"TraitValidation.status=NOT_YET_DEMONSTRATED；不能因为前面指标好看就宣布 TR02 已验证。",
+        "sample_rows":[
+          {"check":"Measurement readiness","evidence":"IndicatorBook + lineage","result":"PASS"},
+          {"check":"Temporal stability","evidence":"StabilityReport drift=0.06","result":"PASS"},
+          {"check":"Independent reference","evidence":"CERT/FINAL reference missing","result":"FAIL"}
+        ]
+      }
+    },
+    "T09": {
+      "status": "NEEDS_HUMAN_REVIEW",
+      "summary_zh": "Gate B 等待人工决定；当前自动建议为 DEFER_PRODUCTION。",
+      "input": {"validation":"TR02.TraitValidation.v3","evidence_pack":"evidence-tr02-v3"},
+      "output": {"artifact":"TR02.TraitReleaseDecision.draft","recommended_decision":"DEFER"},
+      "metrics": {"open_blockers":1,"warnings":2},
+      "example": {
+        "case_id":"RV-203",
+        "title_zh":"Gate B 看到完整证据后决定暂缓生产发布",
+        "input_story":"Evidence pack 包含 T01–T08 artifacts、1 个 blocker 和 2 个 warnings。",
+        "calculation":["研究定义与测量链路完整","稳定性检查通过","T08 独立构念参照缺失属于阻塞项","自动系统只给出 DEFER 建议，最终决定必须由人工完成"],
+        "output_story":"生成 TR02.TraitReleaseDecision.draft，recommended_decision=DEFER，等待 Grace Cui 审核。",
+        "sample_rows":[
+          {"evidence":"Study design","status":"PASS","owner":"Research Lead"},
+          {"evidence":"Measurement + stability","status":"PASS","owner":"Validation"},
+          {"evidence":"Independent construct reference","status":"BLOCKING","owner":"Gate B reviewer"}
+        ]
+      }
+    },
+    "T10": {
+      "status": "LOCKED",
+      "summary_zh": "没有经过 Gate B 批准的 ReleaseBundle，客户级每日评估被锁定。",
+      "input": {"release_bundle":null},
+      "output": null,
+      "metrics": {},
+      "example": {
+        "case_id":"TR02-DAILY-C001-20261029",
+        "title_zh":"没有 ReleaseBundle 时，日常客户评估必须安全停止",
+        "input_story":"日批收到 C001 的 PIT facts，但 release_bundle=null，因为 Gate B 尚未批准。",
+        "calculation":["检查对象版本是否存在已批准 ReleaseBundle","检查用途、有效期和 snapshot compatibility","ReleaseBundle 缺失 → 不运行客户打分，不回退到 Draft，也不沿用未确认结果"],
+        "output_story":"T10 返回 LOCKED；客户结果不发布，并创建明确的阻塞原因。",
+        "sample_rows":[
+          {"client_id":"C001","as_of":"2026-10-29","release_bundle":null,"result":"LOCKED"},
+          {"client_id":"C001","reason":"GATE_B_NOT_APPROVED","published":false,"result":"NO_ASSESSMENT"}
+        ]
+      }
+    }
+  },
+  "manifest": {
+    "config_hash": "sha256:tr02-draft-v3-example",
+    "snapshot_hash": "sha256:snap-20261028-example",
+    "context_manifest": "ctx-tr02-20261028-v1",
+    "split_manifest": "split-tr02-v2",
+    "random_seed": 42017,
+    "prompt_version": "trait-copilot-v1",
+    "llm_model": "mock-suggestion-provider",
+    "operator_versions": {
+      "pit_snapshot":"1.0.0",
+      "opportunity_book":"1.0.0",
+      "measurement":"1.0.0",
+      "mid_cdf":"1.0.0",
+      "split_half":"1.0.0"
+    }
+  }
+}
+

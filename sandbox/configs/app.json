@@ -1,0 +1,21 @@
+{
+  "product_name": "Decision Engine",
+  "product_subtitle": "OFFLINE RESEARCH WORKBENCH",
+  "environment": "Sandbox",
+  "snapshot_id": "snap-2026-10-28-001",
+  "kernel_version": "v0.8.4-sandbox",
+  "future_slots": 37,
+  "production_release_enabled": false,
+  "locale": "zh-CN",
+  "user": {
+    "name": "Grace Cui",
+    "initials": "GC",
+    "role": "Research Lead"
+  },
+  "later_phase_lines": [
+    "L0 Measurement",
+    "L4 Relationship",
+    "L5 Prediction / Impact"
+  ]
+}
+

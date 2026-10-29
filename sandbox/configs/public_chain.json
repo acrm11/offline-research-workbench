@@ -1,0 +1,106 @@
+{
+  "title": "Public Chain",
+  "title_zh": "公共链路",
+  "description_zh": "Trait、State、Signal 共用的受控数据实验室。公共链只返回事实、机会、测量、充分性和授权上下文，不产生对象结论。",
+  "caller": {
+    "object_id": "TR02",
+    "caller_nodes": ["T02", "T03"],
+    "request_id": "req-tr02-c001-20261001-001",
+    "as_of": "2026-10-01T23:59:59+08:00",
+    "purpose": "trait_research",
+    "status": "APPROVED_FOR_SANDBOX"
+  },
+  "steps": [
+    {
+      "id":"CALL",
+      "title":"Call Entry",
+      "title_zh":"对象数据请求",
+      "status":"PASSED",
+      "purpose":"把 TR02.T02/T03 的研究需要编译为最小、有权限边界的数据请求。",
+      "input":"TR02.TraitStudySpec、caller nodes、as_of、Context Policy",
+      "output":"TR02.ObjectDataRequest",
+      "human_preset":["研究用途","允许来源和字段","禁止读取的分支结论","as_of 口径"],
+      "llm":"起草请求、检查字段缺口、提醒请求过宽。",
+      "human_validation":"Research Owner 与 Data Owner 审核用途、最小化和授权。",
+      "example_zh":"只请求余额/持仓、已知义务、TD 到期与续存、产品可得性；禁止读取 State/Signal/Requirement 最终结果。",
+      "artifact":"req-tr02-c001-20261001-001"
+    },
+    {
+      "id":"F01","title":"Source Binding","title_zh":"来源绑定","status":"PASSED",
+      "purpose":"绑定主体、账户、合同、grain、单位、权威来源与双时间。",
+      "input":"ObjectDataRequest、source catalog、schema、owner",
+      "output":"SourceContract",
+      "human_preset":["身份映射","权威来源","grain","币种和单位","effective_at/known_at 语义"],
+      "llm":"建议字段映射、生成 schema diff 和 adapter 测试。",
+      "human_validation":"Data Owner 确认字段业务语义、来源权威和冲突优先级。",
+      "example_zh":"将 core_account_daily、td_contract_master、product_availability_daily 映射为 TR02 typed facts。",
+      "artifact":"sc-tr02-v1"
+    },
+    {
+      "id":"F02","title":"PIT Snapshot","title_zh":"时点安全快照","status":"PASSED",
+      "purpose":"只保留 as_of 当时真正已知的事实，防止未来泄漏。",
+      "input":"SourceContract、raw records、as_of、revision history",
+      "output":"SnapshotManifest + TypedFacts",
+      "human_preset":["PIT cutoff","时区","去重优先级","迟到修订","supersedes"],
+      "llm":"总结被排除记录和异常修订模式；不参与逐行裁决。",
+      "human_validation":"抽样回放、未来泄漏测试、时区边界检查。",
+      "example_zh":"BAL-v1 在 10 月 1 日已知，可进入；BAL-v2 到 10 月 5 日才到达，不能回填 10 月 1 日快照。",
+      "artifact":"snap-tr02-c001-20261001-001"
+    },
+    {
+      "id":"F03","title":"Opportunity Book","title_zh":"候选机会账本","status":"PASSED",
+      "purpose":"枚举本来有机会被观察的事件/决策，并保留不可观察原因。",
+      "input":"PIT TypedFacts、OpportunitySpec、产品/渠道可得性",
+      "output":"OpportunityBook",
+      "human_preset":["机会定义","stable ID","FORCED/NO_OPPORTUNITY/SOURCE_MISSING reason code"],
+      "llm":"从 bad case 提议新 reason code、起草 OpportunitySpec。",
+      "human_validation":"抽检是否漏机会、强制行为是否误标、可得性是否 PIT 安全。",
+      "example_zh":"9 条候选机会：6 条 OBSERVABLE、1 条 FORCED、1 条 NO_OPPORTUNITY、1 条 SOURCE_MISSING。",
+      "artifact":"opp-tr02-c001-20261001-001"
+    },
+    {
+      "id":"F04","title":"Measurement","title_zh":"类型化测量","status":"PASSED",
+      "purpose":"按冻结公式生成有单位、分子分母、coverage 和来源血缘的测量。",
+      "input":"TypedFacts、formula/AST、window、OpportunityBook",
+      "output":"MeasurementValue / IndicatorValue",
+      "human_preset":["公式","单位和方向","窗口","零分母","缺失政策","来源贡献"],
+      "llm":"起草公式候选、生成边界测试、解释失败。",
+      "human_validation":"审核公式语义、单位、血缘和单元测试。",
+      "example_zh":"stable cash share=0.70；buffer ratio=3.20x；rollover persistence=5/6=0.8333。",
+      "artifact":"ms-tr02-c001-20261001-001"
+    },
+    {
+      "id":"F05","title":"Adequacy","title_zh":"研究充分性","status":"WARNING",
+      "purpose":"检查历史、coverage、episodes、方法家族、split 和独立参照是否足够。",
+      "input":"Measurements、research protocol、split manifest、reference list",
+      "output":"AdequacyReport",
+      "human_preset":["最低历史","最低 episode","最低方法家族","split","独立参照","门槛"],
+      "llm":"归纳缺口并生成 Review 摘要；不能放宽门槛。",
+      "human_validation":"确认门槛已预注册，审核 override 和独立参照。",
+      "example_zh":"测量与持续性研究充分，但缺少独立构念参照，因此 T08 被阻塞并建议 DEFER_PRODUCTION。",
+      "artifact":"adequate-tr02-c001-20261001-001"
+    },
+    {
+      "id":"F06","title":"Context Packet","title_zh":"上下文隔离","status":"PASSED",
+      "purpose":"按 allowlist/denylist 生成最小上下文，阻断跨分支结果污染。",
+      "input":"Object ID、worker role、Context Policy、typed facts、background",
+      "output":"ContextManifest + ContextPacket",
+      "human_preset":["role allowlist/denylist","公共背景","分支隔离","审计和过期"],
+      "llm":"只能消费授权 packet，不能自行扩权。",
+      "human_validation":"Security/Research Owner 审核 policy 并运行越权测试。",
+      "example_zh":"TR02 Worker 可看公共背景和原始事实，但不能看 ST01、SG01、Requirement 和 Opportunity 最终结果。",
+      "artifact":"ctx-tr02-c001-20261001-001"
+    },
+    {
+      "id":"RETURN","title":"Return Bundle","title_zh":"返回对象输入包","status":"WARNING",
+      "purpose":"封装对象可消费但仍不含对象结论的 ResearchInputBundle。",
+      "input":"F01–F06 artifacts、request ID、versions、hash",
+      "output":"TR02.ResearchInputBundle",
+      "human_preset":["bundle schema","必需 artifacts","版本/hash","partial/unavailable 状态"],
+      "llm":"总结 bundle、聚类异常 reason code、解释阻塞。",
+      "human_validation":"审核 partial bundle、权限和同一 request/as_of 血缘。",
+      "example_zh":"T02 可生成 6 个 EligibleEpisodes；T03 可生成两个方法家族的 IndicatorBook；T08 因独立参照缺失被阻塞。",
+      "artifact":"bundle-tr02-c001-20261001-001"
+    }
+  ]
+}
